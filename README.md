@@ -106,7 +106,7 @@ A LSTM layer with 64 LSTM unities is used after the CNN + Inception Module part 
 A fully connected layer is used to map the 64 outputs from LSTM units to size 3 (one hot encoding of the 3 categories)
 
 
-### My Replicate Codes
+### My Experiments & Codes
 
 #### Import Libraries
 ```python
@@ -410,16 +410,50 @@ es = EarlyStopping(monitor='val_accuracy', mode='max', patience = stop_epoch_num
 DeepLOB_model.fit(X_train, y_train, epochs=num_epoch, batch_size=batch_size, verbose=2, validation_data=(X_test, y_test), callbacks = [es])
 ```
 
-### Results & Next Steps
-Performance Metrics Comparison Table
+### Experiments Results
 
-|    | MAPE | R | Theil U |
-| -- | ---  | - | ------- |
-| RNN*  | 0.018  | 0.847 | 0.847|
-| WSAEs-LSTM*  | 0.011  | 0.946 | 0.007
-| LSTM Encoder Decoder             | 0.011  | 0.872 | 0.008 |
-| LSTM Encoder Decoder + Attention | 0.0075  | 0.947 | 0.005 |
-| Transformer                      | 0.0055  | 0.980 | 0.0038 |
+#### FI-2010
+
+Here are the loss and accuracy graphs along the training process of the FI-2010 experiment (k = 20)
+
+![FI-2010 Loss Graph](.src/images/FI-2010 Loss Graph.png)
+
+![FI-2010 Accuracy Graph](.src/images/FI-2010 Accuracy Graph.png)
+
+According to the graphs, both validation loss and accuracy stops improving after about 60 epochs although training loss and accuracy are still improving and at around 80 epochs the training stops.
+
+Here is the comparison between authors' reported validation accuracy of their experiment with FI-2010 dataset.
+
+| Model| Validation Accuracy|
+| Author’s Report |78.91%|
+| My Experiment| 73.00%|
+
+The potential reason of this difference could be that I am using only part of the FI-2010 dataset for my experiment so the training data number is not as big as the one the authors used.
+
+To further assess the performance of my model, I also conducted the experiment on the JNJ stock LOB dataset.
+
+#### JNJ LOB
+
+Here are the loss and accuracy graphs along the training process of one specific JNJ LOB experiment (k = 8, alpha = 7e-6)
+
+
+![JNJ Loss Graph](.src/images/JNJ Loss Graph.png)
+
+![JNJ Accuracy Graph](.src/images/JNJ Accuracy Graph.png)
+
+
+
+|Model |k |Validation Accuracy |Epochs taken|
+|Author’s Report on LSE dataset |20 |70.17% |  |
+|Author’s Report on LSE dataset | 50 | 63.93% |  |
+|Author’s Report on LSE dataset | 100|61.52%| |
+|Replicate on JNJ orderbook data |8 |70.28% | 184 |
+|Replicate on JNJ orderbook data |26 |79.43% |102 |
+|Replicate on JNJ orderbook data |80 |77.52%  |32 |
+
+
+
+### Next Steps
 
 The first two models are models from our referenced paper [A deep learning framework for financial time series using stacked autoencoders and long-short term memory](https://www.researchgate.net/publication/318991900_A_deep_learning_framework_for_financial_time_series_using_stacked_autoencoders_and_long-short_term_memory)
 
