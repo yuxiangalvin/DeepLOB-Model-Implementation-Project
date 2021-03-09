@@ -63,7 +63,8 @@ The paper authors used two different datasets: FI-2010 and London Stock Exchange
 Following quantities are calculated using corresponding equations & labels are generated.
 
 |  Dataset  | mid-price | previous k timesteps avg mid-price | future k timesteps avg mid-price| move pct | label
-| FI-2010 |   | - | ------- |  |  |
+| ---- |   -- | ---- | ------- | - | - |
+| FI-2010 | ![WHOLE MODEL STRUCTURE](./src/images/whole_model_structure.png)  | - | ------- |  |  |
 | LSE | ---  | - | ------- |  |  |
 
 
@@ -454,8 +455,6 @@ Here are the loss and accuracy graphs along the training process of one specific
 
 ![JNJ Accuracy Graph](.src/images/JNJ Accuracy Graph.png)
 
-
-
 |Model |k |Validation Accuracy |Epochs taken|
 | -- | -  | ------- | ----- |
 |Author’s Report on LSE dataset |20 |70.17% |  |
@@ -465,13 +464,13 @@ Here are the loss and accuracy graphs along the training process of one specific
 |Replicate on JNJ orderbook data |26 |79.43% |102 |
 |Replicate on JNJ orderbook data |80 |77.52%  |32 |
 
+From the result, my experiment result shows high validation accuracy than authors' experiment on LSE dataset.
 
+I also notice that as k increases in my experiment, final valdiation accuracy has an increasing trend and the number of epochs taken for training goes down. However, the valdiation accruacy trend along k is opposite in authors' report. This is an observation that is worth more thinking and research.
 
 ### Next Steps
 
-The first two models are models from our referenced paper [A deep learning framework for financial time series using stacked autoencoders and long-short term memory](https://www.researchgate.net/publication/318991900_A_deep_learning_framework_for_financial_time_series_using_stacked_autoencoders_and_long-short_term_memory)
+In the next step, I have several plans:
 
-Daily Close Price Predictions Comparison Graph
-![comparison graph](./images/comparison.jpg)
-
-The three performance metrics and the graph match with each other and we conclude  that  among  the  three  models,  transformer model performs the best in predicting S&P500 index daily movement in our experiment setting. Although this result does not indicate transformer will always perform the best in any financial  time-series  prediction  tasks  (eg.   different  data  freqeuncy, input variables), it indicates that transformer has a high potential to be applied in financial time-series prediction tasks and should be payed more attention to in future researches on financial time series. We also plan to see whether this conclusion hold for other financial products and possibly further develop our Transformer model to generate daily adjusted investment strategy.
+* With more computing power allowed, I plan to conduct experiment on larger limit order book dataset on liquid assets
+* Further research on how the value of k affects model performance and find out what tasks the model is most appropriate for.
