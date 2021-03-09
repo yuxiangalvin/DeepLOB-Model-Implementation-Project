@@ -425,6 +425,7 @@ According to the graphs, both validation loss and accuracy stops improving after
 Here is the comparison between authors' reported validation accuracy of their experiment with FI-2010 dataset.
 
 | Model| Validation Accuracy|
+| -- | ---- |
 | Author’s Report |78.91%|
 | My Experiment| 73.00%|
 
@@ -444,6 +445,7 @@ Here are the loss and accuracy graphs along the training process of one specific
 
 
 |Model |k |Validation Accuracy |Epochs taken|
+| -- | -  | ------- | ----- |
 |Author’s Report on LSE dataset |20 |70.17% |  |
 |Author’s Report on LSE dataset | 50 | 63.93% |  |
 |Author’s Report on LSE dataset | 100|61.52%| |
