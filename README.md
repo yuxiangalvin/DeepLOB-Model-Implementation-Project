@@ -64,8 +64,8 @@ Following quantities are calculated using corresponding equations & labels are g
 
 |  Dataset  | mid-price | previous k timesteps avg mid-price | future k timesteps avg mid-price| move pct | label
 | ---- |   -- | ---- | ------- | - | - |
-| FI-2010 | ![WHOLE MODEL STRUCTURE](./src/images/whole_model_structure.png)  | - | ------- |  |  |
-| LSE | ---  | - | ------- |  |  |
+| FI-2010 | ![simple_mid](./src/images/simple_mid.png)  |   |  ![future_k](./src/images/future_k.png) | ![move_pct2](./src/images/move_pct2.png)   | ![label](.src/images/label/.png) |
+| LSE | ![simple_mid](./src/images/simple_mid.png)  | ![pre_k](./src/images/pre_k.png) |![future_k](./src/images/future_k.png)| ![move_pct1](./src/images/move_pct1.png)  | ![label](.src/images/label/.png) |
 
 
 ##### Data Normalization
@@ -429,9 +429,9 @@ DeepLOB_model.fit(X_train, y_train, epochs=num_epoch, batch_size=batch_size, ver
 
 Here are the loss and accuracy graphs along the training process of the FI-2010 experiment (k = 20)
 
-![FI-2010 Loss Graph](.src/images/FI-2010 Loss Graph.png)
+![FI-2010 Loss Graph](./src/images/FI-2010 Loss Graph.png)
 
-![FI-2010 Accuracy Graph](.src/images/FI-2010 Accuracy Graph.png)
+![FI-2010 Accuracy Graph](./src/images/FI-2010 Accuracy Graph.png)
 
 According to the graphs, both validation loss and accuracy stops improving after about 60 epochs although training loss and accuracy are still improving and at around 80 epochs the training stops.
 
@@ -451,9 +451,9 @@ To further assess the performance of my model, I also conducted the experiment o
 Here are the loss and accuracy graphs along the training process of one specific JNJ LOB experiment (k = 8, alpha = 7e-6)
 
 
-![JNJ Loss Graph](.src/images/JNJ Loss Graph.png)
+![JNJ Loss Graph](./src/images/JNJ Loss Graph.png)
 
-![JNJ Accuracy Graph](.src/images/JNJ Accuracy Graph.png)
+![JNJ Accuracy Graph](./src/images/JNJ Accuracy Graph.png)
 
 |Model |k |Validation Accuracy |Epochs taken|
 | -- | -  | ------- | ----- |
