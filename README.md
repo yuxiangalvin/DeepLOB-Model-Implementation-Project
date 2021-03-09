@@ -61,6 +61,11 @@ The paper authors used two different datasets: FI-2010 and London Stock Exchange
 
 ##### Data Labeling
 Following quantities are calculated using corresponding equations & labels are generated.
+| mid-price | previous k timesteps avg mid-price | future k timesteps avg mid-price| move pct | label
+|   -- | ---- | ------- | - | - |
+|  p | m- | m+ | l | y |
+
+
 
 ![labelling](./src/images/labelling.png)
 
