@@ -106,9 +106,9 @@ A LSTM layer with 64 LSTM unities is used after the CNN + Inception Module part 
 A fully connected layer is used to map the 64 outputs from LSTM units to size 3 (one hot encoding of the 3 categories)
 
 
-#### My Replicate Codes
+### My Replicate Codes
 
-##### Import Libraries
+#### Import Libraries
 ```python
 import pandas as pd
 import numpy as np
@@ -124,17 +124,7 @@ from keras.callbacks import EarlyStopping
 import pandas_market_calendars as mcal
 ```
 
-##### Data Normalization & Labeling
-
-I conducted experiment on JNJ (Johnson & Johnson) 2020 January limit orderbook dataset.
-* About 160000 - 200000 timesteps (data points) per trading day
-* Average timestep distance 0.15 second
-
-Here is the code 
-
-
-
-##### Hyper-parameters
+#### Hyper-parameters
 ```python
 #Input param
 lookback_timestep = 100
@@ -168,7 +158,162 @@ stop_epoch_num = 20
 num_epoch = 10000
 ```
 
-##### Model Inititation
+#### Data Normalization & Labeling
+
+I conducted experiment on two different datasets: FI-2010 & JNJ (Johnson & Johnson) 2020 January limit orderbook dataset.
+
+##### FI-2010
+* Benchmark dataset of HFT LOB data
+* Extracted time series data for five stocks from the Nasdaq Nordic stock market (not very liquid asset)
+* Timestep distance in average < 1 second
+* Pre-normalized using z-score
+* Labelled by paper authors
+
+The dataset is included in the github repo. 
+
+Since this dataset accessed from authors' provided source is pre-normalized & labelled so no normalization or labelling is needed and the only preprocessing is dimension adjustion.
+
+```python
+def extract_x_y_data(data, timestamp_per_sample):
+    data_x = np.array(data[:40, :].T)
+    data_y = np.array(data[-5:, :].T)
+    [N, P_x] = data_x.shape
+    P_y = data_y.shape[1]
+    
+    x = np.zeros([(N-timestamp_per_sample+1), timestamp_per_sample, P_x])
+    
+    for i in range(N-timestamp_per_sample+1):
+        x[i] = data_x[i:(i+timestamp_per_sample), :]
+        
+    x = x.reshape(x.shape + (1,))
+        
+    y = data_y[(timestamp_per_sample-1):]
+    y = y[:,3] - 1
+    y = np_utils.to_categorical(y, 3)
+    
+    return x, y
+
+train_fi_x, train_fi_y = extract_x_y_data(train_fi, timestamp_per_sample=100)
+test_fi_x, test_fi_y = extract_x_y_data(test_fi, timestamp_per_sample=100)
+# use a subset of the data for experiment
+train_fi_x3, train_fi_y3, test_fi_x3, test_fi_y3 = train_fi_x[:100000,:,:,:], train_fi_y[:100000,:], test_fi_x[:20000,:], test_fi_y[:20000,:]
+```
+
+##### JNJ LOB
+* About 160000-200000 data points per trading day
+* Timestep distance in average about 0.15 second
+* Not pre-normalized
+* Unlabelled
+
+This dataset is restricted to class use so it's not included in github repo.
+
+Here I will present my complete code example of data pre-processing (normalization, labelling & dimension adjustion)
+
+```python
+# get all trading days in the date range
+nyse = mcal.get_calendar('NYSE')
+dates = list(nyse.schedule(start_date='2020-01-01', end_date='2020-01-09').index)
+dates_str_list = []
+for trading_day in dates:
+    dates_str_list.append(str(trading_day.date()))
+
+# read & store daily LOB data in a dictionary
+daily_data_dict= {}
+for i in range(len(dates_str_list)):
+    date = dates_str_list[i]
+    if date not in daily_data_dict.keys():
+        date = dates_str_list[i]
+        daily_data_dict[date] = np.array(pd.read_csv('./data/JNJ_orderbook/JNJ_' + date + '_34200000_57600000_orderbook_10.csv',header = None))
+
+# get the previous 5 day mean & standard deviation for each trading day and store in dictionaries.
+normalization_mean_dict = {}
+normalization_stddev_dict = {}
+for i in range(5,len(dates_str_list)):
+    date = dates_str_list[i]
+    
+    if (date not in normalization_mean_dict.keys()) or (date not in normalization_stddev_dict.keys()):
+        look_back_dates_list = dates_str_list[(i-5):i]
+        prev_5_day_orderbook_np = None
+        for look_back_date in look_back_dates_list:
+            if prev_5_day_orderbook_np is None:
+                prev_5_day_orderbook_np = daily_data_dict[look_back_date]
+            else:
+                prev_5_day_orderbook_np = np.vstack((prev_5_day_orderbook_np, daily_data_dict[look_back_date]))
+                
+        
+        price_mean = prev_5_day_orderbook_np[:,range(0,prev_5_day_orderbook_np.shape[1],2)].mean()
+        price_std = prev_5_day_orderbook_np[:,range(0,prev_5_day_orderbook_np.shape[1],2)].std()
+        size_mean = prev_5_day_orderbook_np[:,range(1,prev_5_day_orderbook_np.shape[1],2)].mean()
+        size_std = prev_5_day_orderbook_np[:,range(1,prev_5_day_orderbook_np.shape[1],2)].std()
+        
+        normalization_mean_dict[date] = np.repeat([[price_mean,size_mean]], 20, axis=0).flatten()
+        normalization_stddev_dict[date] = np.repeat([[price_std,size_std]], 20, axis=0).flatten()
+        
+# normalize each day's data separatly
+daily_norm_data_dict = {}
+for i in range(5,len(dates_str_list)):
+    date = dates_str_list[i]
+    if date not in daily_norm_data_dict.keys():
+        daily_norm_data_dict[date] = (daily_data_dict[date] - normalization_mean_dict[date])/ normalization_stddev_dict[date]
+        
+# define functions to generate X and y
+def moving_average(x, k):
+    return np.convolve(x, np.ones(k), 'valid') / k
+    
+def generate_labels(k, alpha, daily_data_dict):
+    daily_label_dict = {}
+    for date in list(daily_data_dict.keys())[5:]:
+        price_ask = daily_data_dict[date][:,0]
+        size_ask = daily_data_dict[date][:,1]
+        price_bid = daily_data_dict[date][:,2]
+        size_bid = daily_data_dict[date][:,3]
+        mid_price = (price_ask * size_bid + price_bid * size_ask) / (size_ask + size_bid)
+        future_k_avg_mid_price = moving_average(mid_price, k)[1:]
+        change_pct = (future_k_avg_mid_price - mid_price[:-k])/mid_price[:-k]
+        y_label = (-(change_pct < -alpha).astype(int))  + (change_pct > alpha).astype(int)
+        
+        daily_label_dict[date] = y_label.reshape(-1,1)
+    return daily_label_dict
+
+def generate_X_y(k, alpha, timestamp_per_sample, daily_norm_data_dict, daily_data_dict):
+    #k is the number of future timesteps used to generate the label y
+    data_x = None
+    for date in daily_norm_data_dict.keys():
+        if data_x is None:
+            data_x = daily_norm_data_dict[date].copy()[:-k,:]
+        else:
+            data_x = np.vstack((data_x, daily_norm_data_dict[date][:-k,:]))
+    print(data_x.shape)
+    
+    daily_label_dict = generate_labels(k, alpha, daily_data_dict)
+    data_y = None
+    for date in daily_label_dict.keys():
+        if data_y is None:
+            data_y = daily_label_dict[date].copy()
+        else:
+            data_y = np.vstack((data_y, daily_label_dict[date]))
+            
+    [N, P_x] = data_x.shape   
+    x = np.zeros([(N-timestamp_per_sample+1), timestamp_per_sample, P_x])
+    
+    for i in range(N-timestamp_per_sample+1):
+        x[i] = data_x[i:(i+timestamp_per_sample), :]
+        
+    x = x.reshape(x.shape + (1,))
+    y = data_y[(timestamp_per_sample-1):]
+    y = np_utils.to_categorical(y, 3)
+    
+    return x, y
+    
+# generate X and y with k = 8 & alpha = 7e-6 (alpha decided through finding the threshold value that approximately separates data into 3 balanced label categories for the specific k value)
+X,y = generate_X_y(k=8, alpha=7e-6, timestamp_per_sample=100,
+                   daily_norm_data_dict= daily_norm_data_dict, 
+                   daily_data_dict = daily_data_dict)
+# separate into train & validation data (4:1)
+X_train, X_test, y_train, y_test = train_test_split(X,y,test_size = 0.2)
+```
+
+#### Model Definition
 
 ```python
 def initiate_DeepLOB_model(lookback_timestep, feature_num, conv_filter_num, inception_num, LSTM_num, leaky_relu_alpha,
@@ -254,11 +399,13 @@ def initiate_DeepLOB_model(lookback_timestep, feature_num, conv_filter_num, ince
     return DeepLOB_model
 ```
 
-##### Model Training
+#### Model Initiation & Training
 
 ```python
 DeepLOB_model = initiate_DeepLOB_model(lookback_timestep, feature_num, conv_filter_num, inception_num, LSTM_num, leaky_relu_alpha,
                           loss, optimizer, metrics)
+
+# definte the training stop criteria (no new max validation accuracy in 20 consecutive epochs)
 es = EarlyStopping(monitor='val_accuracy', mode='max', patience = stop_epoch_num, verbose=1)
 DeepLOB_model.fit(X_train, y_train, epochs=num_epoch, batch_size=batch_size, verbose=2, validation_data=(X_test, y_test), callbacks = [es])
 ```
