@@ -1,7 +1,7 @@
 
 ## DeepLOB-Model-Implementation-Project
 
-Welcome to my project page! It's time to dive Deep.
+Welcome to my project page! It's time to dive DEEP :)
 
 This is a replicate project to develop the model raised up in the paper DeepLOB - Deep Convolutional Neural Networks. 
 The original paper's authors are Zihao Zhang, Stefan Zohren, Stephen Roberts. The paper is linked here: https://arxiv.org/pdf/1808.03668.pdf
@@ -476,7 +476,7 @@ I also notice that as k increases in my experiment, final valdiation accuracy ha
 
 ## Next Steps
 
-In the next step, I have several plans:
+In the next step, I have two plan steps:
 
 * With more computing power allowed, I plan to conduct experiment on larger limit order book dataset on liquid assets
 * Further research on how the value of k affects model performance and find out what tasks the model is most appropriate for.
