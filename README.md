@@ -472,7 +472,7 @@ Here are the loss and accuracy graphs along the training process of one specific
 
 From the result, my experiment result shows high validation accuracy than authors' experiment on LSE dataset. This shows that my replicated model has great performance on the specific JNJ dataset.
 
-I also notice that as k increases in my experiment, final valdiation accuracy has an increasing trend and the number of epochs taken for training goes down. However, the valdiation accruacy trend along k is opposite in authors' report. This is an observation that is worth more thinking and research.
+I also notice that as k increases in my experiment, final valdiation accuracy has a rough increasing trend (until certain k value) and the number of epochs taken for training goes down as k increases. However, the valdiation accruacy trend along k is opposite in authors' report. This is an observation that is worth more thinking and research.
 
 ## Next Steps
 
