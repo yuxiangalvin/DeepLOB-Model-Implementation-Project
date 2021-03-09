@@ -62,10 +62,7 @@ The paper authors used two different datasets: FI-2010 and London Stock Exchange
 ##### Data Labeling
 Following quantities are calculated using corresponding equations & labels are generated.
 
-|  Dataset  | mid-price | previous k timesteps avg mid-price | future k timesteps avg mid-price| move pct | label
-| ---- |   -- | ---- | ------- | - | - |
-| FI-2010 | ![simple_mid](./src/images/simple_mid.png)  |   |  ![future_k](./src/images/future_k.png) | ![move_pct2](./src/images/move_pct2.png)   | ![label](.src/images/label/.png) |
-| LSE | ![simple_mid](./src/images/simple_mid.png)  | ![pre_k](./src/images/pre_k.png) |![future_k](./src/images/future_k.png)| ![move_pct1](./src/images/move_pct1.png)  | ![label](.src/images/label/.png) |
+![labelling](./src/images/labelling.png)
 
 
 ##### Data Normalization
@@ -266,7 +263,11 @@ I applied two adjustions to the author's labelling method.
 
 * mid price is calculated as the weighted mid price using limit order size at the best ask and bid level instead of the simple mid point. This is a mroe accuracte way to calculate theoretical mid price used by quantitative finance companies and researchers.
 
+![mid_adjust](./src/images/mid_adjust.png)
+
 * The category label is labelled through looking at change percentage from current timestep mid-price to future k timestep average mid-price instead of past k to future k. This adjustion makes sure the model could not see part of the change percentage information from input X.
+
+![change_pct_adjust](./src/images/change_pct_adjust.png)
 
 ```python       
 # define functions to generate X (appropriate dimension) and y (labelling)
