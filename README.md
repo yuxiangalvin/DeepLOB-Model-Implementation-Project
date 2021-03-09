@@ -6,35 +6,36 @@ Welcome to my project page! It's time to dive Deep.
 This is a replicate project to develop the model raised up in the paper DeepLOB - Deep Convolutional Neural Networks. 
 The original paper's authors are Zihao Zhang, Stefan Zohren, Stephen Roberts. The paper is linked here: https://arxiv.org/pdf/1808.03668.pdf
 
-### Project Information
-#### University: Northwestern University
+## Project Information
+### University: Northwestern University
 
-#### Professor: Prof. Han Liu
+### Professor: Prof. Han Liu
 
-#### Project Member & Contact Information:
+### Project Member & Contact Information:
   
   * Yuxiang(Alvin) Chen   yuxiangchen2021 at u.northwestern.edu
 
-#### GitHub Repository:
-  Here is my [GitHub Repository](https://github.com/yuxiangalvin/DeepLOB-Model-Implementation-Project)
+### GitHub Repository:
+  Here is my [GitHub Repository](https://github.com/yuxiangalvin/DeepLOB-Model-Implementation-Project).
+  
   This repo contains some codes and outputs of my implementation of DeepLOB model.
   
-### Motivation:
+## Motivation:
 
 Deep Learning's application in Finance has always been one of the most complicated research area for Deep Learning. While reading various papers that focus on Deep Learning methods on Quantitative Finance applications, this paper about [DeepLOB - Deep Convolutional Neural Networks](https://arxiv.org/pdf/1808.03668.pdf) catches my attention.
 
 Nowadays, most companies in Quantitative Finance field uses limit orderbook data to conduct all kinds of analysis. It provides much more information than traditional one point data. High frequency limit orderbook data is essential for companies which conduct high frequency trading and the importance has been growing at an extremely fast speed. As an individal who is very passionate about machine learning's applications in finance data of Level II or above, I would like to fully understand the DeepLOB model and the authors' intensions behind each design component. At the same time, I would like to further enhance my deep learning application skills. Thus, I conducted this replicate project.
 
 
-### Model Details
+## Model Details
 
 The model takes in the limit orderbook data of one specific stock as input and conduct a 3-class prediction for the stock's mid-price movement. The three classes are 'Down', 'Hold' and 'Up'. There has been previous researches which focus on limit orderbook data. However, most of them applied static feature extract method that mainly based on domain expertise and conventions. These static methods include Linear Discriminant Analysis (LDA) and Principal Component Analysis (PCA), etc. 
 
 The DeepLOB model intead applies a dynamic feature ectraction approach through applying Deep Learning architecture (CNN + Inception Module). It also uses an additional LSTM to capture additional dependence that is not captured by the CNN + Inception Module.
 
-#### Inputs
+### Inputs
 
-##### Raw Data
+#### Raw Data
 The DeepLOB model takes limit orderbook data as inputs, specifically, at each time point, it takes in a limit orderbook snippet - the lowest 10 ask levels and the highest 10 bid levels. Each level has one price data and one size data. Thus, at each time point, there are 40 numbers. Below is am example of how the orderbook looks like at one time point (10 levels are shown here in this example)
 
 ![LIMIT ORDERBOOK EXAMPLE](./src/images/limit_orderbook_example.png)
@@ -46,37 +47,36 @@ Thus the input size of the model is N x 100 x 40 x 1 (N is the number of timeste
 
 The paper authors used two different datasets: FI-2010 and London Stock Exchange (LSE) limit orderbook data.
 
-##### FI-2010 dataset
+#### FI-2010 dataset
 
 * FI-2010 is a public benchmark dataset of HFT LOB data and extracted time series data for five stocks from the Nasdaq Nordic stock market for a time period of 10 consecutive days. 
 * The timestep distance between two data points are in average < 1 second. 
 * The dataset is pre-normalized using z-score normalization.
 
-##### LSE dataset
+#### LSE dataset
 
 * LSE dataset is not a publicly accessible dataset. 
 * The stocks involved has much higher liqudity than the 5 stocks in FI-2010 dataset
 * The timestep distance between two data points are samller and in average 0.192 seocnd
 * The dataset is not pre-normalized.
 
-##### Data Labeling
+#### Data Labeling
 Following quantities are calculated using corresponding equations & labels are generated.
 | mid-price | previous k timesteps avg mid-price | future k timesteps avg mid-price| move pct | label
 |   -- | ---- | ------- | - | - |
 |  p | m- | m+ | l | y |
 
 
-
 ![labelling](./src/images/labelling.png)
 
 
-##### Data Normalization
+#### Data Normalization
 
 * FI-2010 dataset is pre-noralized 
 * LSE dataset: Each trading day's price and size at each level is normalized using the previous 5 trading days' price and size separately.
 
 
-#### Model Structure
+### Model Structure
 
 Here I will use the original pictures used in the original paper with my annotations to present the model structure.
 
@@ -84,7 +84,7 @@ Here I will use the original pictures used in the original paper with my annotat
 
 The model starts with 1 CNN block with 3 sub parts. 
 
-##### CNN Block Design
+#### CNN Block Design
 
 There are three points that worths noticing in the CNN block design.
 
@@ -94,7 +94,7 @@ There are three points that worths noticing in the CNN block design.
 
 3. The further layers keep exploring boarder interactions.
 
-##### Inception Module
+#### Inception Module
 
 Following the CNN block is an Inception Module. The Inception Module is more powerful than a common CNN block becasue it allows to use multiple types of filter size, instead of being restricted to a single filter size. The specific structure of the Inception Module is shown below in the figure.
 
@@ -102,16 +102,16 @@ Following the CNN block is an Inception Module. The Inception Module is more pow
 
 As the structure figure shows, this specific Inception Module contains three parallel processes. This allows the module to capture dynamic behaviors over multiple timescales. An 1 x 1 Conv layer is used in every path. This idea is form the Network-in-Network approach proposed in a [2014 paper](https://arxiv.org/pdf/1312.4400v3.pdf). Instead of applying a simple convolution to the data, the Network-in-Network method uses a small neural network to capture the non-linear properties of the data.
 
-##### LSTM & FC
+#### LSTM & FC
 
 A LSTM layer with 64 LSTM unities is used after the CNN + Inception Module part in order to capture additioanl time dependencies.
 
 A fully connected layer is used to map the 64 outputs from LSTM units to size 3 (one hot encoding of the 3 categories)
 
 
-### My Experiments & Codes
+## My Experiments & Codes
 
-#### Import Libraries
+### Import Libraries
 ```python
 import pandas as pd
 import numpy as np
@@ -127,7 +127,7 @@ from keras.callbacks import EarlyStopping
 import pandas_market_calendars as mcal
 ```
 
-#### Hyper-parameters
+### Hyper-parameters
 ```python
 #Input param
 lookback_timestep = 100
@@ -161,11 +161,11 @@ stop_epoch_num = 20
 num_epoch = 10000
 ```
 
-#### Data Normalization & Labeling
+### Data Normalization & Labeling
 
 I conducted experiment on two different datasets: FI-2010 & JNJ (Johnson & Johnson) 2020 January limit orderbook dataset.
 
-##### FI-2010
+#### FI-2010
 * Benchmark dataset of HFT LOB data
 * Extracted time series data for five stocks from the Nasdaq Nordic stock market (not very liquid asset)
 * Timestep distance in average < 1 second
@@ -202,7 +202,7 @@ test_fi_x, test_fi_y = extract_x_y_data(test_fi, timestamp_per_sample=100)
 train_fi_x3, train_fi_y3, test_fi_x3, test_fi_y3 = train_fi_x[:100000,:,:,:], train_fi_y[:100000,:], test_fi_x[:20000,:], test_fi_y[:20000,:]
 ```
 
-##### JNJ LOB
+#### JNJ LOB
 * About 160000-200000 data points per trading day
 * Timestep distance in average about 0.15 second
 * Not pre-normalized
@@ -210,7 +210,7 @@ train_fi_x3, train_fi_y3, test_fi_x3, test_fi_y3 = train_fi_x[:100000,:,:,:], tr
 
 This dataset is restricted to class use so it's not included in github repo. Here I will present my complete code example of data pre-processing (normalization, labelling & dimension adjustion)
 
-###### Data Read-in & Normalization
+##### Data Read-in & Normalization
 
 The paper authors conducted their second experiment on London Stock Exchange (LSE) LOB dataset. The JNJ dataset and LSE dataset share similar characteristics in their frequency, stock liquidity, etc. Thus I followed the same method for nomalization as that used by authors for LSE dataset. I used the previous 5 days data to normalize the current day' data. This is applied to every day (excluding the first 5 days in the dataset)
 
@@ -262,7 +262,7 @@ for i in range(5,len(dates_str_list)):
         daily_norm_data_dict[date] = (daily_data_dict[date] - normalization_mean_dict[date])/ normalization_stddev_dict[date]
 ```
 
-###### Labelling
+##### Labelling
 
 I applied two adjustions to the author's labelling method.
 
@@ -332,7 +332,7 @@ X,y = generate_X_y(k=8, alpha=7e-6, timestamp_per_sample=100,
 X_train, X_test, y_train, y_test = train_test_split(X,y,test_size = 0.2)
 ```
 
-#### Model Definition
+### Model Definition
 
 ```python
 def initiate_DeepLOB_model(lookback_timestep, feature_num, conv_filter_num, inception_num, LSTM_num, leaky_relu_alpha,
@@ -418,7 +418,7 @@ def initiate_DeepLOB_model(lookback_timestep, feature_num, conv_filter_num, ince
     return DeepLOB_model
 ```
 
-#### Model Initiation & Training
+### Model Initiation & Training
 
 ```python
 DeepLOB_model = initiate_DeepLOB_model(lookback_timestep, feature_num, conv_filter_num, inception_num, LSTM_num, leaky_relu_alpha,
@@ -429,9 +429,9 @@ es = EarlyStopping(monitor='val_accuracy', mode='max', patience = stop_epoch_num
 DeepLOB_model.fit(X_train, y_train, epochs=num_epoch, batch_size=batch_size, verbose=2, validation_data=(X_test, y_test), callbacks = [es])
 ```
 
-### Experiments Results
+## Experiments Results
 
-#### FI-2010
+### FI-2010
 
 Here are the loss and accuracy graphs along the training process of the FI-2010 experiment (k = 20)
 
@@ -452,7 +452,7 @@ The potential reason of this difference could be that I am using only part of th
 
 To further assess the performance of my model, I also conducted the experiment on the JNJ stock LOB dataset.
 
-#### JNJ LOB
+### JNJ LOB
 
 Here are the loss and accuracy graphs along the training process of one specific JNJ LOB experiment (k = 8, alpha = 7e-6)
 
@@ -474,7 +474,7 @@ From the result, my experiment result shows high validation accuracy than author
 
 I also notice that as k increases in my experiment, final valdiation accuracy has an increasing trend and the number of epochs taken for training goes down. However, the valdiation accruacy trend along k is opposite in authors' report. This is an observation that is worth more thinking and research.
 
-### Next Steps
+## Next Steps
 
 In the next step, I have several plans:
 
