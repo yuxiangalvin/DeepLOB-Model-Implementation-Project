@@ -205,9 +205,11 @@ train_fi_x3, train_fi_y3, test_fi_x3, test_fi_y3 = train_fi_x[:100000,:,:,:], tr
 * Not pre-normalized
 * Unlabelled
 
-This dataset is restricted to class use so it's not included in github repo.
+This dataset is restricted to class use so it's not included in github repo. Here I will present my complete code example of data pre-processing (normalization, labelling & dimension adjustion)
 
-Here I will present my complete code example of data pre-processing (normalization, labelling & dimension adjustion)
+###### Data Read-in & Normalization
+
+The paper authors conducted their second experiment on London Stock Exchange (LSE) LOB dataset. The JNJ dataset and LSE dataset share similar characteristics in their frequency, stock liquidity, etc. Thus I followed the same method for nomalization as that used by authors for LSE dataset. I used the previous 5 days data to normalize the current day' data. This is applied to every day (excluding the first 5 days in the dataset)
 
 ```python
 # get all trading days in the date range
@@ -248,15 +250,25 @@ for i in range(5,len(dates_str_list)):
         
         normalization_mean_dict[date] = np.repeat([[price_mean,size_mean]], 20, axis=0).flatten()
         normalization_stddev_dict[date] = np.repeat([[price_std,size_std]], 20, axis=0).flatten()
-        
+
 # normalize each day's data separatly
 daily_norm_data_dict = {}
 for i in range(5,len(dates_str_list)):
     date = dates_str_list[i]
     if date not in daily_norm_data_dict.keys():
         daily_norm_data_dict[date] = (daily_data_dict[date] - normalization_mean_dict[date])/ normalization_stddev_dict[date]
-        
-# define functions to generate X and y
+```
+
+###### Labelling
+
+I applied two adjustions to the author's labelling method.
+
+* mid price is calculated as the weighted mid price using limit order size at the best ask and bid level instead of the simple mid point. This is a mroe accuracte way to calculate theoretical mid price used by quantitative finance companies and researchers.
+
+* The category label is labelled through looking at change percentage from current timestep mid-price to future k timestep average mid-price instead of past k to future k. This adjustion makes sure the model could not see part of the change percentage information from input X.
+
+```python       
+# define functions to generate X (appropriate dimension) and y (labelling)
 def moving_average(x, k):
     return np.convolve(x, np.ones(k), 'valid') / k
     
