@@ -418,7 +418,9 @@ def initiate_DeepLOB_model(lookback_timestep, feature_num, conv_filter_num, ince
     return DeepLOB_model
 ```
 
-### Model Initiation & Training
+### Model Initiation, Training & Testing
+
+As stated above, the data is separated into a training set and a validation set. Since all parameters are provided by the paper clearly, there is no model tuning process that depend on validation results. The validation set is used as the function of the testing set. The code below will print out the training process. Graphs of loss and accuracy through training and other Keras supported metrics could be accessed fro mthe history variable.
 
 ```python
 DeepLOB_model = initiate_DeepLOB_model(lookback_timestep, feature_num, conv_filter_num, inception_num, LSTM_num, leaky_relu_alpha,
@@ -426,7 +428,7 @@ DeepLOB_model = initiate_DeepLOB_model(lookback_timestep, feature_num, conv_filt
 
 # definte the training stop criteria (no new max validation accuracy in 20 consecutive epochs)
 es = EarlyStopping(monitor='val_accuracy', mode='max', patience = stop_epoch_num, verbose=1)
-DeepLOB_model.fit(X_train, y_train, epochs=num_epoch, batch_size=batch_size, verbose=2, validation_data=(X_test, y_test), callbacks = [es])
+history = DeepLOB_model.fit(X_train, y_train, epochs=num_epoch, batch_size=batch_size, verbose=2, validation_data=(X_test, y_test), callbacks = [es])
 ```
 
 ## Experiments Results
@@ -443,7 +445,7 @@ According to the graphs, both validation loss and accuracy stops improving after
 
 Here is the comparison between authors' reported validation accuracy of their experiment with FI-2010 dataset.
 
-| Model| Validation Accuracy|
+| Model| Accuracy|
 | -- | ---- |
 | Author’s Report |78.91%|
 | My Experiment| 73.00%|
@@ -461,7 +463,7 @@ Here are the loss and accuracy graphs along the training process of one specific
 
 ![JNJ Accuracy Graph](./src/images/JNJ Accuracy Graph.png)
 
-|Model |k |Validation Accuracy |Epochs taken|
+|Model |k | Accuracy |Epochs taken|
 | -- | -  | ------- | ----- |
 |Author’s Report on LSE dataset |20 |70.17% |  |
 |Author’s Report on LSE dataset | 50 | 63.93% |  |
