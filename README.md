@@ -486,9 +486,13 @@ I also notice that as k increases in my experiment, final valdiation accuracy ha
 * The model performs well still with adjustment on how midprice is calculated and how lables are generated.
 * The model has a stable great performance on high frequency dataset.
 
-### Next Steps
+### Considerations & Next Steps
 In the next step, I have two plan steps:
 
 * With more computing power allowed, I plan to conduct experiment on larger limit order book dataset on liquid assets
 * Further research on how the value of k affects model performance and find out what tasks the model is most appropriate for.
-* It will be meaningful to think about how the result of the model could be used for real-life trading strategies in high frequency trading environment. Whether there is any other adjustment needed to the model to make the conversion to real trading strategy feasible and applicable.
+
+An important next-step consideration of putting this model into application from here:
+
+* It will be very meaningful to think about how the result of the model could be used for real-life trading strategies in high frequency trading environment. 
+* Whether there is any other adjustment on the labelling method needed for the model to make the conversion to real trading strategies feasible and applicable.
