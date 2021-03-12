@@ -4,7 +4,7 @@
 Welcome to my project page! It's time to dive DEEP :)
 
 This is a replicate project to develop the model raised up in the paper DeepLOB - Deep Convolutional Neural Networks. 
-The original paper's authors are Zihao Zhang, Stefan Zohren, Stephen Roberts. The paper is linked here: https://arxiv.org/pdf/1808.03668.pdf
+The original paper's authors are Zihao Zhang, Stefan Zohren, Stephen Roberts. The paper is linked here: [Original Paper](https://arxiv.org/pdf/1808.03668.pdf)
 
 ## Project Information
 ### University: Northwestern University
