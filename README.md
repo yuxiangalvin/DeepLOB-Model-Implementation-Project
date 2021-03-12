@@ -114,6 +114,8 @@ A fully connected layer is used to map the 64 outputs from LSTM units to size 3 
 
 ## My Experiments & Codes
 
+All the following codes could be found in 'DeepLOB keras FI-2010.ipynb' and 'DeepLOB keras JNJ.ipynb' in codes folder. The two files differ only in data preprocessing process and the experiment process.
+
 ### Import Libraries
 ```python
 import pandas as pd
