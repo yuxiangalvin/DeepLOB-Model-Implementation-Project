@@ -19,6 +19,9 @@ The original paper's authors are Zihao Zhang, Stefan Zohren, Stephen Roberts. Th
   Here is my [GitHub Repository](https://github.com/yuxiangalvin/DeepLOB-Model-Implementation-Project).
   
   This repo contains some codes and outputs of my implementation of DeepLOB model.
+
+### Project Presentation
+  Here is my [Project Presentation Video](https://youtu.be/KEP-8hXKk0c)
   
 ## Motivation:
 
