@@ -437,9 +437,9 @@ history = DeepLOB_model.fit(X_train, y_train, epochs=num_epoch, batch_size=batch
 
 Here are the loss and accuracy graphs along the training process of the FI-2010 experiment (k = 20)
 
-![FI-2010 Loss Graph]('./src/images/FI-2010 Loss Graph.png')
+![FI-2010 Loss Graph]("./src/images/FI-2010 Loss Graph.png")
 
-![FI-2010 Accuracy Graph]('./src/images/FI-2010 Accuracy Graph.png')
+![FI-2010 Accuracy Graph]("./src/images/FI-2010 Accuracy Graph.pn"')
 
 According to the graphs, both validation loss and accuracy stops improving after about 60 epochs although training loss and accuracy are still improving and at around 80 epochs the training stops.
 
@@ -459,9 +459,9 @@ To further assess the performance of my model, I also conducted the experiment o
 Here are the loss and accuracy graphs along the training process of one specific JNJ LOB experiment (k = 8, alpha = 7e-6)
 
 
-![JNJ Loss Graph]('./src/images/JNJ Loss Graph.png')
+![JNJ Loss Graph]("./src/images/JNJ Loss Graph.png")
 
-![JNJ Accuracy Graph]('./src/images/JNJ Accuracy Graph.png')
+![JNJ Accuracy Graph]("./src/images/JNJ Accuracy Graph.png")
 
 |Model |k | Accuracy |Epochs taken|
 | -- | -  | ------- | ----- |
