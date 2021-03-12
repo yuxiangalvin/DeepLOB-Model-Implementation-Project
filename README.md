@@ -476,9 +476,19 @@ From the result, my experiment result shows high validation accuracy than author
 
 I also notice that as k increases in my experiment, final valdiation accuracy has a rough increasing trend (until certain k value) and the number of epochs taken for training goes down as k increases. However, the valdiation accruacy trend along k is opposite in authors' report. This is an observation that is worth more thinking and research.
 
-## Next Steps
+## Conclusions & Next Steps
 
+### Conclusions
+
+* The model I replicated and implemented could successfully be trained and reach similar performance as the author reported.
+* The model does need sufficient amount of data for training to avoid overfitting problem.
+* As the k parameter increases, according to my experiment, the number of epochs needed for the training to finish decreases.
+* The model performs well still with adjustment on how midprice is calculated and how lables are generated.
+* The model has a stable great performance on high frequency dataset.
+
+### Next Steps
 In the next step, I have two plan steps:
 
 * With more computing power allowed, I plan to conduct experiment on larger limit order book dataset on liquid assets
 * Further research on how the value of k affects model performance and find out what tasks the model is most appropriate for.
+* It will be meaningful to think about how the result of the model could be used for real-life trading strategies in high frequency trading environment. Whether there is any other adjustment needed to the model to make the conversion to real trading strategy feasible and applicable.
